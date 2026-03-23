@@ -1,4 +1,4 @@
-﻿(function renderApp() {
+(function renderApp() {
   window.BugGenie = window.BugGenie || {};
 
   const { html } = window.BugGenie;

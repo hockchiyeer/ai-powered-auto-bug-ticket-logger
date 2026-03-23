@@ -1,0 +1,7 @@
+{
+  "name": "BugGenie AI - Auto Bug/Incident Ticket Logger",
+  "description": "An AI-powered bug and incident ticket logger that uses Gemini to automatically structure, categorize, and analyze technical issues from natural language and screenshots.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

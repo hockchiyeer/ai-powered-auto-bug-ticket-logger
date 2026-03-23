@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,7 +6,7 @@
   <title>BugGenie AI</title>
   <script>
     window.BUGGENIE_CONFIG = window.BUGGENIE_CONFIG || {
-      geminiApiKey: "",
+      geminiApiKey: typeof GEMINI_API_KEY !== 'undefined' ? GEMINI_API_KEY : "",
       googleImageSearchUrl: "https://images.google.com/"
     };
   </script>

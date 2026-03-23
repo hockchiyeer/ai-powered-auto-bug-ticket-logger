@@ -1,11 +1,11 @@
-﻿(function registerAnalysis() {
+(function registerAnalysis() {
   window.BugGenie = window.BugGenie || {};
 
   const { geminiApiKey, googleImageSearchUrl } = window.BugGenie.config;
   const { fileToBase64 } = window.BugGenie.fileUtils;
   const { sanitizeReport } = window.BugGenie.reportUtils;
   const modelEndpoint =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent";
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
 
   const isGeminiConfigured = () => Boolean(geminiApiKey);
 

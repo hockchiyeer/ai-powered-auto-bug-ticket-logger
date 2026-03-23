@@ -1,4 +1,4 @@
-﻿(function registerReportUtils() {
+(function registerReportUtils() {
   window.BugGenie = window.BugGenie || {};
 
   const { getImageDataUrls } = window.BugGenie.fileUtils;

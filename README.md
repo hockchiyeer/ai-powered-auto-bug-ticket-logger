@@ -29,14 +29,21 @@ This repository does not currently use a bundler, package manager, or backend se
 
 ```text
 .
-|-- index.html
-`-- js
-    |-- analysis.js
-    |-- app.js
-    |-- components.js
-    |-- config.js
-    |-- file-utils.js
-    `-- report-utils.js
+|-- .env.example        # Environment variable template
+|-- LICENSE.txt         # License information
+|-- README.md           # Project documentation
+|-- index.html          # Main application entry point
+|-- metadata.json       # AI Studio application metadata
+|-- package.json        # Project dependencies and scripts
+|-- tsconfig.json       # TypeScript configuration
+|-- vite.config.ts      # Vite configuration
+`-- js/                 # Application logic
+    |-- analysis.js     # Gemini and fallback analysis logic
+    |-- app.js          # Main application orchestration
+    |-- components.js   # UI components and rendering
+    |-- config.js       # Configuration and namespace setup
+    |-- file-utils.js   # File handling utilities
+    `-- report-utils.js # Report formatting and export utilities
 ```
 
 ## File Overview
@@ -84,21 +91,24 @@ This repository does not currently use a bundler, package manager, or backend se
 
 ## Configuration
 
-Configuration is provided in `index.html` through `window.BUGGENIE_CONFIG`.
+Configuration is provided in `index.html` through `window.BUGGENIE_CONFIG`. By default, the app attempts to retrieve the Gemini API key from a global `GEMINI_API_KEY` variable, which is often injected by the hosting environment (e.g., AI Studio).
 
 ```html
 <script>
-  window.BUGGENIE_CONFIG = {
-    geminiApiKey: "YOUR_GEMINI_API_KEY",
+  window.BUGGENIE_CONFIG = window.BUGGENIE_CONFIG || {
+    // Falls back to global GEMINI_API_KEY if not explicitly set
+    geminiApiKey: typeof GEMINI_API_KEY !== 'undefined' ? GEMINI_API_KEY : "YOUR_GEMINI_API_KEY",
     googleImageSearchUrl: "https://images.google.com/"
   };
 </script>
 ```
 
+The initialization logic in `js/config.js` also checks for `window.GEMINI_API_KEY` directly as a secondary fallback.
+
 ### Config Options
 
 - `geminiApiKey`
-  Google Gemini API key used for primary AI analysis.
+  Google Gemini API key used for primary AI analysis. It can be provided via `window.BUGGENIE_CONFIG.geminiApiKey` or the global `GEMINI_API_KEY` variable.
 
 - `googleImageSearchUrl`
   URL opened during the manual Google Images / Lens fallback flow.

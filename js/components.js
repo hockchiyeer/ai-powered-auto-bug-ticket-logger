@@ -1,4 +1,4 @@
-﻿(function registerComponents() {
+(function registerComponents() {
   window.BugGenie = window.BugGenie || {};
 
   const { html } = window.BugGenie;

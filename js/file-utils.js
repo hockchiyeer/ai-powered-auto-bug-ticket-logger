@@ -1,4 +1,4 @@
-﻿(function registerFileUtils() {
+(function registerFileUtils() {
   window.BugGenie = window.BugGenie || {};
 
   const createAssetId = () => {
