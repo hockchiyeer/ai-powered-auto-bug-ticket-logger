@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BugGenie AI</title>
+  <script>
+    window.BUGGENIE_CONFIG = window.BUGGENIE_CONFIG || {
+      geminiApiKey: "",
+      googleImageSearchUrl: "https://images.google.com/"
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
+  <script src="https://unpkg.com/lucide@0.469.0"></script>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    #root {
+      min-height: 100vh;
+    }
+
+    @keyframes toast-enter {
+      from {
+        opacity: 0;
+        transform: translateX(2rem);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes panel-enter {
+      from {
+        opacity: 0;
+        transform: translateY(1rem);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in.fade-in.slide-in-from-right-8 {
+      animation: toast-enter 0.3s ease-out both;
+    }
+
+    .animate-in.fade-in.slide-in-from-bottom-4 {
+      animation: panel-enter 0.7s ease-out both;
+    }
+  </style>
+</head>
+<body class="bg-slate-50">
+  <div id="root"></div>
+
+  <script src="./js/config.js"></script>
+  <script src="./js/file-utils.js"></script>
+  <script src="./js/report-utils.js"></script>
+  <script src="./js/analysis.js"></script>
+  <script src="./js/components.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
