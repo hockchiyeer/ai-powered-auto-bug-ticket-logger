@@ -407,8 +407,10 @@
           "Use the Google Search AI summary as a draft and refine the fix with engineering investigation."
       },
       systemContext: {
+        intent: envData.intent || "N/A",
         url: envData.url || "N/A",
-        environment: envData.testEnv || "N/A"
+        environment: envData.testEnv || "N/A",
+        version: envData.version || "N/A"
       }
     });
 
@@ -491,11 +493,13 @@ The output MUST be a JSON object matching this schema:
 }`;
 
     const userQuery = `Analyze this bug.
-User Provided Context (Use this if available, otherwise deduce): URL=${envData.url || "N/A"}, Env=${
-      envData.testEnv || "N/A"
-    }, Version=${envData.version || "N/A"}, Browser=${envData.browser || "N/A"}, OS=${
-      envData.os || "N/A"
-    }.`;
+User Provided Context (Use this if available, otherwise deduce):
+Intent/Context: ${envData.intent || "N/A"}
+URL: ${envData.url || "N/A"}
+Env: ${envData.testEnv || "N/A"}
+Version: ${envData.version || "N/A"}
+Browser: ${envData.browser || "N/A"}
+OS: ${envData.os || "N/A"}.`;
 
     const imageParts = await Promise.all(
       assets
@@ -544,9 +548,11 @@ User Provided Context (Use this if available, otherwise deduce): URL=${envData.u
           ...report,
           systemContext: {
             ...(report.systemContext || {}),
+            intent: envData.intent || report.systemContext?.intent || "N/A",
             url: envData.url || report.systemContext?.url || "N/A",
             environment:
-              envData.testEnv || report.systemContext?.environment || "N/A"
+              envData.testEnv || report.systemContext?.environment || "N/A",
+            version: envData.version || report.systemContext?.version || "N/A"
           }
         };
       } catch (error) {

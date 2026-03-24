@@ -74,6 +74,8 @@
           new Date().toLocaleDateString(),
         url: rawReport.systemContext?.url || "N/A",
         environment: rawReport.systemContext?.environment || "N/A",
+        version: rawReport.systemContext?.version || "N/A",
+        intent: rawReport.systemContext?.intent || "N/A",
         ...(rawReport.systemContext || {})
       }
     };
@@ -83,20 +85,57 @@
     const r = sanitizeReport(report || {});
     const sys = r.systemContext || {};
 
+    const userContextFields = [
+      { label: "User Prompt", value: sys.intent },
+      { label: "Target URL", value: sys.url },
+      { label: "Version", value: sys.version },
+      { label: "Environment", value: sys.environment }
+    ].filter(f => f.value && f.value !== "N/A");
+
+    const userContextHtml = userContextFields.length > 0
+      ? `
+  <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+    <h3 style="color: #475569; font-size: 11px; text-transform: uppercase; margin: 0 0 12px 0; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">User Provided Context</h3>
+    <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+      ${userContextFields.map(f => `
+        <div>
+          <strong style="display: block; font-size: 10px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">${escapeHtml(f.label)}</strong>
+          <div style="font-size: 13px; color: #1e293b; white-space: pre-wrap;">${escapeHtml(f.value)}</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`
+      : "";
+
+    const envContextFields = [
+      { label: "Client", value: r.environment?.client },
+      { label: "Device", value: r.environment?.device },
+      { label: "OS/Platform", value: r.environment?.osPlatform },
+      { label: "Network Condition", value: r.environment?.networkCondition }
+    ].filter(f => f.value && f.value !== "N/A");
+
     return `
 <div style="font-family: Arial, sans-serif; color: #333; width: 100%; background: #ffffff; box-sizing: border-box; padding: 24px;">
-  <h2 style="color: #4f46e5; margin-bottom: 4px;">${escapeHtml(r.metadata?.title)}</h2>
-  <p style="margin-top: 0;"><strong>Severity:</strong> ${escapeHtml(r.metadata?.severity)} | <strong>Priority:</strong> ${escapeHtml(r.metadata?.priority)}</p>
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+    <div>
+      <h2 style="color: #4f46e5; margin: 0 0 4px 0;">${escapeHtml(r.metadata?.title)}</h2>
+      <p style="margin: 0; font-size: 14px;"><strong>Severity:</strong> ${escapeHtml(r.metadata?.severity)} | <strong>Priority:</strong> ${escapeHtml(r.metadata?.priority)}</p>
+    </div>
+    <div style="text-align: right;">
+      <div style="font-weight: bold; color: #4f46e5;">${escapeHtml(sys.bugId)}</div>
+      <div style="font-size: 12px; color: #94a3b8;">${escapeHtml(sys.dateReported)}</div>
+    </div>
+  </div>
+
+  ${userContextHtml}
+
   <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;" />
 
   <h3 style="color: #475569; font-size: 16px;">Environment Context</h3>
   <ul style="padding-left: 20px;">
-    <li><strong>URL:</strong> ${escapeHtml(sys.url)}</li>
-    <li><strong>Client:</strong> ${escapeHtml(r.environment?.client)}</li>
-    <li><strong>Device:</strong> ${escapeHtml(r.environment?.device)}</li>
-    <li><strong>OS/Platform:</strong> ${escapeHtml(r.environment?.osPlatform)}</li>
-    <li><strong>Environment:</strong> ${escapeHtml(sys.environment)}</li>
-    <li><strong>Network Condition:</strong> ${escapeHtml(r.environment?.networkCondition)}</li>
+    ${envContextFields.map(f => `
+      <li style="margin-bottom: 4px; font-size: 14px;"><strong>${escapeHtml(f.label)}:</strong> ${escapeHtml(f.value)}</li>
+    `).join('')}
   </ul>
 
   <div style="display: flex; gap: 20px; margin-top: 20px; align-items: stretch;">

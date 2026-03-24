@@ -31,7 +31,8 @@
   const INITIAL_ENV_CONTEXT = {
     url: "",
     version: "",
-    testEnv: ""
+    testEnv: "",
+    intent: ""
   };
 
   const ENVIRONMENT_OPTIONS = [
@@ -730,6 +731,21 @@
                   System Context
                 </h2>
                 <div className="space-y-4">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                      Intent/Context for AI
+                    </label>
+                    <textarea
+                      value=${envContext.intent}
+                      placeholder="e.g., I'm testing the login flow and it fails when using a long password..."
+                      onChange=${(event) =>
+                        setEnvContext((previous) => ({
+                          ...previous,
+                          intent: event.target.value
+                        }))}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm min-h-[80px] max-h-[200px] overflow-y-auto resize-y"
+                    />
+                  </div>
                   <${InputGroup}
                     label="Target URL"
                     value=${envContext.url}
