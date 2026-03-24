@@ -95,12 +95,12 @@
     const userContextHtml = userContextFields.length > 0
       ? `
   <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-    <h3 style="color: #475569; font-size: 11px; text-transform: uppercase; margin: 0 0 12px 0; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">User Provided Context</h3>
+    <h3 style="color: #475569; font-size: 11px; text-transform: uppercase; margin: 0 0 12px 0; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; font-weight: bold; text-decoration: underline;">User Provided Context</h3>
     <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
       ${userContextFields.map(f => `
         <div>
-          <strong style="display: block; font-size: 10px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">${escapeHtml(f.label)}</strong>
-          <div style="font-size: 13px; color: #1e293b; white-space: pre-wrap;">${escapeHtml(f.value)}</div>
+          <strong style="display: block; font-size: 10px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">${escapeHtml(f.label)}:</strong>
+          <div style="font-size: 13px; color: #1e293b; white-space: pre-wrap; margin-left: 12px;">${escapeHtml(f.value)}</div>
         </div>
       `).join('')}
     </div>
@@ -131,7 +131,7 @@
 
   <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;" />
 
-  <h3 style="color: #475569; font-size: 16px;">Environment Context</h3>
+  <h3 style="color: #475569; font-size: 16px; font-weight: bold; text-decoration: underline;">Environment Context</h3>
   <ul style="padding-left: 20px;">
     ${envContextFields.map(f => `
       <li style="margin-bottom: 4px; font-size: 14px;"><strong>${escapeHtml(f.label)}:</strong> ${escapeHtml(f.value)}</li>
@@ -149,7 +149,7 @@
     </div>
   </div>
 
-  <h3 style="color: #475569; font-size: 16px; margin-top: 24px;">Steps to Reproduce</h3>
+  <h3 style="color: #475569; font-size: 16px; margin-top: 24px; font-weight: bold; text-decoration: underline;">Steps to Reproduce</h3>
   <ol style="padding-left: 20px;">
     ${(r.stepsToReproduce ?? [])
       .map(
@@ -159,17 +159,20 @@
       .join("")}
   </ol>
 
-  <h3 style="color: #475569; font-size: 16px; margin-top: 24px;">Technical Details</h3>
+  <h3 style="color: #475569; font-size: 16px; margin-top: 24px; font-weight: bold; text-decoration: underline;">Technical Details</h3>
   <div style="background: #0f172a; color: #cbd5e1; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 12px; page-break-inside: avoid;">
     <p style="margin: 0 0 8px 0;"><strong style="color: #94a3b8;">Error Code:</strong> ${escapeHtml(r.technicalDetails?.errorCode)}</p>
     <p style="margin: 0 0 8px 0;"><strong style="color: #94a3b8;">Component:</strong> ${escapeHtml(r.technicalDetails?.component)}</p>
-    <code style="display: block; white-space: pre-wrap; color: #f8fafc; border-top: 1px solid #334155; padding-top: 8px;">${escapeHtml(r.technicalDetails?.logsOrStackTrace)}</code>
+    <div style="border-top: 1px solid #334155; margin-top: 8px; padding-top: 8px;">
+      <strong style="display: block; font-size: 10px; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Logs / Stack Trace:</strong>
+      <code style="display: block; white-space: pre-wrap; color: #f8fafc;">${escapeHtml(r.technicalDetails?.logsOrStackTrace)}</code>
+    </div>
   </div>
 
   ${
     imageDataUrls.length > 0
       ? `
-  <h3 style="color: #475569; font-size: 16px; margin-top: 24px;">Screenshots</h3>
+  <h3 style="color: #475569; font-size: 16px; margin-top: 24px; font-weight: bold; text-decoration: underline;">Screenshots</h3>
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
     ${imageDataUrls
       .map(
@@ -186,7 +189,7 @@
       : ""
   }
 
-  <h3 style="color: #475569; font-size: 16px; margin-top: 24px;">Stakeholder Impact</h3>
+  <h3 style="color: #475569; font-size: 16px; margin-top: 24px; font-weight: bold; text-decoration: underline;">Stakeholder Impact</h3>
   <p style="font-size: 14px; white-space: pre-wrap;"><strong>User Impact:</strong> ${escapeHtml(r.impact?.user)}</p>
   <p style="font-size: 14px; white-space: pre-wrap;"><strong>Business Impact:</strong> ${escapeHtml(r.impact?.business)}</p>
 </div>

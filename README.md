@@ -119,9 +119,9 @@ Google's current Gemini guidance distinguishes between server-side SDK usage and
 BugGenie is a browser app, so the project-specific recommendation is:
 
 - Prefer `window.BUGGENIE_CONFIG.geminiApiKey` for explicit browser injection.
-- `js/config.js` also falls back to `window.GEMINI_API_KEY`.
-- If you run through Vite, `js/config.js` also falls back to `process.env.GEMINI_API_KEY`.
-- Although Google's SDKs support `GOOGLE_API_KEY`, this project does not currently read that variable automatically.
+- `js/config.js` also falls back to `window.GEMINI_API_KEY` and `window.GOOGLE_API_KEY`.
+- If you run through Vite, `js/config.js` also falls back to `process.env.GEMINI_API_KEY` and `process.env.GOOGLE_API_KEY`.
+- Google's SDKs often use `GOOGLE_API_KEY`, and this project now supports it as a secondary fallback.
 
 ### Recommended Browser Config
 
@@ -131,7 +131,7 @@ Configuration is provided in `index.html` through `window.BUGGENIE_CONFIG`.
 <script>
   window.BUGGENIE_CONFIG = window.BUGGENIE_CONFIG || {
     // Browser apps should receive the Gemini API key explicitly at runtime.
-    geminiApiKey: window.GEMINI_API_KEY || "YOUR_GEMINI_API_KEY",
+    geminiApiKey: window.GEMINI_API_KEY || window.GOOGLE_API_KEY || "YOUR_GEMINI_API_KEY",
     googleImageSearchUrl: "https://images.google.com/"
   };
 </script>
@@ -153,7 +153,7 @@ If you want to avoid editing `index.html` for local development, use the include
 ### Config Options
 
 - `geminiApiKey`
-  Google Gemini API key used for primary AI analysis. In this browser app, the preferred path is `window.BUGGENIE_CONFIG.geminiApiKey`. The code also supports `window.GEMINI_API_KEY` and `process.env.GEMINI_API_KEY`.
+  Google Gemini API key used for primary AI analysis. In this browser app, the preferred path is `window.BUGGENIE_CONFIG.geminiApiKey`. The code also supports `window.GEMINI_API_KEY`, `window.GOOGLE_API_KEY`, `process.env.GEMINI_API_KEY`, and `process.env.GOOGLE_API_KEY`.
 
 - `googleImageSearchUrl`
   URL opened during the manual Google Images / Lens fallback flow.
