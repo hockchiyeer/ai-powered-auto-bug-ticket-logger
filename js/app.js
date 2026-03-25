@@ -23,7 +23,8 @@
     LucideIcon,
     InputGroup,
     ErrorBoundary,
-    ReportDisplay
+    ReportDisplay,
+    LoadingDots
   } = window.BugGenie.components;
 
   const { useCallback, useEffect, useRef, useState } = React;
@@ -231,6 +232,7 @@
   };
 
   const App = () => {
+    console.log("BugGenie AI App Initializing...");
     const [files, setFiles] = useState([]);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [generatedReport, setGeneratedReport] = useState(null);
@@ -679,10 +681,13 @@
 
         <div className="max-w-7xl mx-auto">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <div className="flex items-center gap-3">
-              <div className="bg-indigo-600 p-2 rounded-xl">
-                <${LucideIcon} name="bug" className="text-white w-8 h-8" />
-              </div>
+            <div className="flex items-center gap-3" key="app-header-v2">
+              <img
+                src="./assets/icons/BugGenie.png"
+                alt="BugGenie AI"
+                className="w-12 h-12 object-contain"
+                referrerPolicy="no-referrer"
+              />
               <div>
                 <h1 className="text-2xl font-bold tracking-tight">BugGenie AI</h1>
                 <p className="text-slate-500 text-sm font-medium">
@@ -835,14 +840,17 @@
                               name=${file.type === "image" ? "image" : "file-text"}
                               size=${14}
                               className=${file.type === "image" ? "text-blue-500" : ""}
+                              fallback=${file.type === "image" ? "IMG" : "DOC"}
                             />
                             <span className="truncate">${file.name}</span>
                           </div>
                           <button
                             onClick=${() => removeFile(file.id)}
-                            className="text-slate-400 hover:text-red-500"
+                            className="text-slate-400 hover:text-red-600 transition-colors p-1 flex items-center justify-center"
+                            title="Delete file"
+                            aria-label="Delete file"
                           >
-                            <${LucideIcon} name=${["trash-2", "trash"]} size=${14} />
+                            <${LucideIcon} name="trash-2" size=${16} fallback="×" />
                           </button>
                         </div>
                       `)}
@@ -853,13 +861,13 @@
                 <button
                   disabled=${files.length === 0 || isAnalyzing}
                   onClick=${handleGenerateReport}
-                  className="w-full mt-6 bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full mt-6 bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
                 >
                   <${LucideIcon}
-                    name=${isAnalyzing ? ["loader-circle", "loader-2"] : ["shield-check", "shield"]}
-                    className=${isAnalyzing ? "animate-spin" : ""}
+                    name=${isAnalyzing ? "loader-circle" : "shield-check"}
+                    className=${isAnalyzing ? "animate-spin w-5 h-5" : "w-5 h-5"}
                   />
-                  ${isAnalyzing ? "AI is Analyzing..." : "Generate Full Report"}
+                  ${isAnalyzing ? html`AI is Analyzing<${LoadingDots} />` : "Generate Full Report"}
                 </button>
 
                 <button
@@ -897,11 +905,17 @@
                 isAnalyzing &&
                 html`
                   <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center h-[500px] flex flex-col items-center justify-center">
-                    <${LucideIcon}
-                      name=${["loader-circle", "loader-2"]}
-                      className="w-12 h-12 text-indigo-600 animate-spin mb-4"
-                    />
-                    <h3 className="text-xl font-bold">Forensic Analysis in Progress...</h3>
+                    <div className="relative mb-6">
+                      <${LucideIcon}
+                        name="loader-circle"
+                        className="w-16 h-16 text-indigo-600 animate-spin"
+                      />
+                      <${LucideIcon}
+                        name="search"
+                        className="w-6 h-6 text-indigo-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                      />
+                    </div>
+                    <h3 className="text-xl font-bold">Forensic Analysis in Progress<${LoadingDots} /></h3>
                     <p className="text-slate-400 mt-2">
                       Deducing device types, analyzing error boundaries, and
                       compiling 10 sections.

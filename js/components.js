@@ -15,11 +15,11 @@
     return null;
   };
 
-  const LucideIcon = ({ name, className = "", size, strokeWidth = 2 }) => {
+  const LucideIcon = ({ name, className = "", size, strokeWidth = 2, fallback = "" }) => {
     const icon = resolveLucideIcon(name);
 
     if (!icon) {
-      return null;
+      return fallback ? html`<span className=${className} style=${size ? { fontSize: size * 0.8 } : undefined}>${fallback}</span>` : null;
     }
 
     const style = size ? { width: size, height: size } : undefined;
@@ -403,12 +403,27 @@ ${r.technicalDetails?.logsOrStackTrace ?? "N/A"}
     `;
   };
 
+  const LoadingDots = () => {
+    const [index, setIndex] = React.useState(0);
+    const sequence = ["", ".", "..", "...", "..", "."];
+
+    React.useEffect(() => {
+      const interval = setInterval(() => {
+        setIndex((prev) => (prev + 1) % sequence.length);
+      }, 400);
+      return () => clearInterval(interval);
+    }, []);
+
+    return sequence[index];
+  };
+
   window.BugGenie.components = {
     LucideIcon,
     InputGroup,
     StatusCard,
     DataRow,
     ErrorBoundary,
-    ReportDisplay
+    ReportDisplay,
+    LoadingDots
   };
 })();

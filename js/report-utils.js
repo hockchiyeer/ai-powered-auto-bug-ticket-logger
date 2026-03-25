@@ -94,15 +94,17 @@
 
     const userContextHtml = userContextFields.length > 0
       ? `
-  <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-    <h3 style="color: #475569; font-size: 11px; text-transform: uppercase; margin: 0 0 12px 0; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; font-weight: bold; text-decoration: underline;">User Provided Context</h3>
-    <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-      ${userContextFields.map(f => `
-        <div>
-          <strong style="display: block; font-size: 10px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">${escapeHtml(f.label)}:</strong>
-          <div style="font-size: 13px; color: #1e293b; white-space: pre-wrap; margin-left: 12px;">${escapeHtml(f.value)}</div>
-        </div>
-      `).join('')}
+  <div style="margin-top: 24px; margin-bottom: 24px;">
+    <h2 style="color: #475569; font-size: 18px; font-weight: bold; text-decoration: underline; margin: 0 0 12px 0;">User Provided Context</h2>
+    <div style="padding: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; word-wrap: break-word; overflow-wrap: break-word;">
+      <ul style="margin: 0; padding: 0 0 0 20px; list-style-type: disc;">
+        ${userContextFields.map(f => `
+          <li style="margin-bottom: 12px; color: #1e293b;">
+            <strong style="font-size: 11px; color: #64748b; text-transform: uppercase; margin-right: 4px;">${escapeHtml(f.label)}:</strong>
+            <span style="font-size: 13px; white-space: pre-wrap; word-break: break-word;">${escapeHtml(f.value)}</span>
+          </li>
+        `).join('')}
+      </ul>
     </div>
   </div>`
       : "";
@@ -114,84 +116,112 @@
       { label: "Network Condition", value: r.environment?.networkCondition }
     ].filter(f => f.value && f.value !== "N/A");
 
+    const technicalDetailsFields = [
+      { label: "Error Code", value: r.technicalDetails?.errorCode || "N/A" },
+      { label: "Component", value: r.technicalDetails?.component || "N/A" },
+      { label: "Logs / Stack Trace", value: r.technicalDetails?.logsOrStackTrace || "N/A", isLong: true }
+    ];
+
+    const impactFields = [
+      { label: "User Impact", value: r.impact?.user },
+      { label: "Business Impact", value: r.impact?.business }
+    ].filter(f => f.value && f.value !== "N/A");
+
     return `
-<div style="font-family: Arial, sans-serif; color: #333; width: 100%; background: #ffffff; box-sizing: border-box; padding: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
-    <div>
-      <h2 style="color: #4f46e5; margin: 0 0 4px 0;">${escapeHtml(r.metadata?.title)}</h2>
-      <p style="margin: 0; font-size: 14px;"><strong>Severity:</strong> ${escapeHtml(r.metadata?.severity)} | <strong>Priority:</strong> ${escapeHtml(r.metadata?.priority)}</p>
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #333; background: #ffffff; padding: 24px; line-height: 1.5; word-wrap: break-word; overflow-wrap: break-word; mso-line-height-rule: exactly;">
+  <div style="margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+    <div style="margin-bottom: 12px;">
+      <h1 style="color: #4f46e5; margin: 0 0 8px 0; font-size: 28px; font-weight: bold; text-decoration: underline;">${escapeHtml(r.metadata?.title)}</h1>
+      <div style="margin: 0; font-size: 14px; color: #475569;">
+        <strong style="color: #1e293b;">Severity:</strong> ${escapeHtml(r.metadata?.severity)} 
+        <span style="color: #cbd5e1; margin: 0 8px;">|</span> 
+        <strong style="color: #1e293b;">Priority:</strong> ${escapeHtml(r.metadata?.priority)}
+      </div>
     </div>
-    <div style="text-align: right;">
-      <div style="font-weight: bold; color: #4f46e5;">${escapeHtml(sys.bugId)}</div>
-      <div style="font-size: 12px; color: #94a3b8;">${escapeHtml(sys.dateReported)}</div>
+    <div style="margin-top: 8px;">
+      <div style="font-weight: bold; color: #4f46e5; font-size: 18px; margin: 0; line-height: 1.2;">${escapeHtml(sys.bugId)}</div>
+      <div style="font-size: 12px; color: #94a3b8; margin: 0; line-height: 1.2;"><strong>Date:</strong> ${escapeHtml(sys.dateReported)}</div>
     </div>
   </div>
 
   ${userContextHtml}
 
-  <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;" />
+  <div style="margin-top: 32px; margin-bottom: 24px;">
+    <h2 style="color: #475569; font-size: 18px; font-weight: bold; text-decoration: underline; margin-bottom: 12px;">Environment Context</h2>
+    <ul style="margin: 0; padding: 0 0 0 20px; list-style-type: disc;">
+      ${envContextFields.map(f => `
+        <li style="margin-bottom: 8px; color: #1e293b;">
+          <strong style="color: #64748b; font-size: 14px; margin-right: 4px;">${escapeHtml(f.label)}:</strong>
+          <span style="font-size: 14px;">${escapeHtml(f.value)}</span>
+        </li>
+      `).join('')}
+    </ul>
+  </div>
 
-  <h3 style="color: #475569; font-size: 16px; font-weight: bold; text-decoration: underline;">Environment Context</h3>
-  <ul style="padding-left: 20px;">
-    ${envContextFields.map(f => `
-      <li style="margin-bottom: 4px; font-size: 14px;"><strong>${escapeHtml(f.label)}:</strong> ${escapeHtml(f.value)}</li>
+  <div style="margin-top: 32px; margin-bottom: 24px;">
+    <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e; margin-bottom: 16px;">
+      <h3 style="color: #166534; font-size: 14px; margin: 0 0 8px 0; font-weight: bold;">Expected Behavior</h3>
+      <div style="font-size: 14px; color: #14532d; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">${escapeHtml(r.behavior?.expected)}</div>
+    </div>
+    <div style="background: #fef2f2; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+      <h3 style="color: #991b1b; font-size: 14px; margin: 0 0 8px 0; font-weight: bold;">Observed Behavior</h3>
+      <div style="font-size: 14px; color: #7f1d1d; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">${escapeHtml(r.behavior?.observed)}</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 32px; margin-bottom: 24px;">
+    <h2 style="color: #475569; font-size: 18px; font-weight: bold; text-decoration: underline; margin-bottom: 12px;">Steps to Reproduce</h2>
+    <div style="margin-bottom: 16px;">
+      ${(r.stepsToReproduce ?? []).map((step, index) => `
+        <div style="margin-bottom: 10px; word-wrap: break-word; overflow-wrap: break-word;">
+          <strong style="font-size: 14px; color: #94a3b8; margin-right: 8px;">${index + 1}.</strong>
+          <span style="font-size: 14px; color: #1e293b;">${escapeHtml(step)}</span>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+
+  <div style="margin-top: 32px; margin-bottom: 24px;">
+    <h2 style="color: #475569; font-size: 18px; font-weight: bold; text-decoration: underline; margin-bottom: 12px;">Technical Details</h2>
+    <div style="padding: 20px; background: #0f172a; border-radius: 8px; color: #cbd5e1; word-wrap: break-word; overflow-wrap: break-word;">
+      <ul style="margin: 0; padding: 0 0 0 20px; list-style-type: disc;">
+        ${technicalDetailsFields.map(f => `
+          <li style="margin-bottom: 12px; color: #f8fafc;">
+            <strong style="color: #94a3b8; font-size: 10px; text-transform: uppercase; margin-right: 8px; vertical-align: top;">${escapeHtml(f.label)}:</strong>
+            <span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 13px; word-break: break-all; white-space: pre-wrap; line-height: 1.4; vertical-align: top;">${escapeHtml(f.value)}</span>
+          </li>
+        `).join('')}
+      </ul>
+    </div>
+  </div>
+
+  ${imageDataUrls.length > 0 ? `
+  <div style="margin-top: 32px; margin-bottom: 24px;">
+    <h2 style="color: #475569; font-size: 18px; font-weight: bold; text-decoration: underline; margin-bottom: 16px;">Screenshots</h2>
+    ${imageDataUrls.map((img) => `
+      <div style="margin-bottom: 24px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #f8fafc; max-width: 100%;">
+        <div style="padding: 0; text-align: center;">
+          <img src="${img.data}" alt="${escapeHtml(img.name)}" style="max-width: 100%; height: auto; display: block; margin: 0 auto;" />
+        </div>
+        <div style="padding: 8px; font-size: 11px; color: #64748b; text-align: center; background: #ffffff; border-top: 1px solid #e2e8f0;">
+          ${escapeHtml(img.name)}
+        </div>
+      </div>
     `).join('')}
-  </ul>
-
-  <div style="display: flex; gap: 20px; margin-top: 20px; align-items: stretch;">
-    <div style="flex: 1; background: #f0fdf4; padding: 12px; border-radius: 8px; border-left: 4px solid #22c55e; page-break-inside: avoid;">
-      <strong style="color: #166534; font-size: 12px; text-transform: uppercase;">Expected</strong>
-      <p style="margin: 8px 0 0 0; font-size: 14px; white-space: pre-wrap;">${escapeHtml(r.behavior?.expected)}</p>
-    </div>
-    <div style="flex: 1; background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444; page-break-inside: avoid;">
-      <strong style="color: #991b1b; font-size: 12px; text-transform: uppercase;">Observed</strong>
-      <p style="margin: 8px 0 0 0; font-size: 14px; white-space: pre-wrap;">${escapeHtml(r.behavior?.observed)}</p>
-    </div>
   </div>
+  ` : ""}
 
-  <h3 style="color: #475569; font-size: 16px; margin-top: 24px; font-weight: bold; text-decoration: underline;">Steps to Reproduce</h3>
-  <ol style="padding-left: 20px;">
-    ${(r.stepsToReproduce ?? [])
-      .map(
-        (step) =>
-          `<li style="margin-bottom: 8px; font-size: 14px;">${escapeHtml(step)}</li>`
-      )
-      .join("")}
-  </ol>
-
-  <h3 style="color: #475569; font-size: 16px; margin-top: 24px; font-weight: bold; text-decoration: underline;">Technical Details</h3>
-  <div style="background: #0f172a; color: #cbd5e1; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 12px; page-break-inside: avoid;">
-    <p style="margin: 0 0 8px 0;"><strong style="color: #94a3b8;">Error Code:</strong> ${escapeHtml(r.technicalDetails?.errorCode)}</p>
-    <p style="margin: 0 0 8px 0;"><strong style="color: #94a3b8;">Component:</strong> ${escapeHtml(r.technicalDetails?.component)}</p>
-    <div style="border-top: 1px solid #334155; margin-top: 8px; padding-top: 8px;">
-      <strong style="display: block; font-size: 10px; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Logs / Stack Trace:</strong>
-      <code style="display: block; white-space: pre-wrap; color: #f8fafc;">${escapeHtml(r.technicalDetails?.logsOrStackTrace)}</code>
-    </div>
+  <div style="margin-top: 32px; margin-bottom: 24px;">
+    <h2 style="color: #475569; font-size: 18px; font-weight: bold; text-decoration: underline; margin-bottom: 12px;">Stakeholder Impact</h2>
+    <ul style="margin: 0; padding: 0 0 0 20px; list-style-type: disc;">
+      ${impactFields.map(f => `
+        <li style="margin-bottom: 8px; color: #1e293b;">
+          <strong style="color: #64748b; font-size: 14px; margin-right: 4px;">${escapeHtml(f.label)}:</strong>
+          <span style="font-size: 14px;">${escapeHtml(f.value)}</span>
+        </li>
+      `).join('')}
+    </ul>
   </div>
-
-  ${
-    imageDataUrls.length > 0
-      ? `
-  <h3 style="color: #475569; font-size: 16px; margin-top: 24px; font-weight: bold; text-decoration: underline;">Screenshots</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-    ${imageDataUrls
-      .map(
-        (img) => `
-    <div style="margin-bottom: 16px; page-break-inside: avoid;">
-      <img src="${img.data}" alt="${escapeHtml(img.name)}" style="max-width: 100%; display: block; border: 1px solid #e2e8f0; border-radius: 8px;" />
-      <p style="font-size: 10px; color: #94a3b8; text-align: center; margin-top: 4px;">${escapeHtml(img.name)}</p>
-    </div>
-    `
-      )
-      .join("")}
-  </div>
-  `
-      : ""
-  }
-
-  <h3 style="color: #475569; font-size: 16px; margin-top: 24px; font-weight: bold; text-decoration: underline;">Stakeholder Impact</h3>
-  <p style="font-size: 14px; white-space: pre-wrap;"><strong>User Impact:</strong> ${escapeHtml(r.impact?.user)}</p>
-  <p style="font-size: 14px; white-space: pre-wrap;"><strong>Business Impact:</strong> ${escapeHtml(r.impact?.business)}</p>
 </div>
 `;
   };
