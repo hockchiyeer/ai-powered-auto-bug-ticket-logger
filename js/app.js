@@ -260,6 +260,15 @@
       };
     }, []);
 
+    useEffect(() => {
+      if (toast) {
+        const timer = setTimeout(() => {
+          setToast(null);
+        }, 10000);
+        return () => clearTimeout(timer);
+      }
+    }, [toast]);
+
     const buildRuntimeData = () => ({
       ...envContext,
       browser: navigator.userAgent.split(" ").slice(-1)[0],
