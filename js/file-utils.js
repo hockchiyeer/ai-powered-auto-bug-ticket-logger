@@ -43,17 +43,35 @@
   };
 
   const mapIncomingFiles = (incomingFiles = []) => {
-    return incomingFiles.map((file) => ({
-      id: createAssetId(),
-      file,
-      preview: file.type.includes("image") ? URL.createObjectURL(file) : null,
-      type: file.type.includes("image")
-        ? "image"
-        : file.type.includes("video")
-          ? "video"
-          : "text",
-      name: file.name
-    }));
+    return incomingFiles.map((file) => {
+      const fileName = file.name.toLowerCase();
+      const fileType = (file.type || "").toLowerCase();
+      let type = "text";
+
+      if (fileType.includes("image") || /\.(jpg|jpeg|png|gif|webp|svg)$/.test(fileName)) {
+        type = "image";
+      } else if (fileType.includes("video") || /\.(mp4|webm|ogg|mov|avi)$/.test(fileName)) {
+        type = "video";
+      } else if (fileType === "application/pdf" || fileName.endsWith(".pdf")) {
+        type = "pdf";
+      } else if (
+        fileType.includes("word") ||
+        fileName.endsWith(".doc") ||
+        fileName.endsWith(".docx")
+      ) {
+        type = "doc";
+      } else if (fileType.includes("text") || fileName.endsWith(".txt") || fileName.endsWith(".log")) {
+        type = "text";
+      }
+
+      return {
+        id: createAssetId(),
+        file,
+        preview: type === "image" ? URL.createObjectURL(file) : null,
+        type,
+        name: file.name
+      };
+    });
   };
 
   window.BugGenie.fileUtils = {

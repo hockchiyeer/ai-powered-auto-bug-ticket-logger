@@ -846,10 +846,40 @@
                         >
                           <div className="flex items-center gap-2 truncate">
                             <${LucideIcon}
-                              name=${file.type === "image" ? "image" : "file-text"}
+                              name=${
+                                file.type === "image"
+                                  ? "image"
+                                  : file.type === "video"
+                                    ? "video"
+                                    : file.type === "pdf"
+                                      ? "file-digit"
+                                      : file.type === "doc"
+                                        ? "file-text"
+                                        : "file"
+                              }
                               size=${14}
-                              className=${file.type === "image" ? "text-blue-500" : ""}
-                              fallback=${file.type === "image" ? "IMG" : "DOC"}
+                              className=${
+                                file.type === "image"
+                                  ? "text-blue-500"
+                                  : file.type === "video"
+                                    ? "text-amber-500"
+                                    : file.type === "pdf"
+                                      ? "text-red-500"
+                                      : file.type === "doc"
+                                        ? "text-indigo-500"
+                                        : "text-slate-500"
+                              }
+                              fallback=${
+                                file.type === "image"
+                                  ? "IMG"
+                                  : file.type === "video"
+                                    ? "VID"
+                                    : file.type === "pdf"
+                                      ? "PDF"
+                                      : file.type === "doc"
+                                        ? "DOC"
+                                        : "TXT"
+                              }
                             />
                             <span className="truncate">${file.name}</span>
                           </div>

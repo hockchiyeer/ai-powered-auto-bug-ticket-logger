@@ -446,13 +446,15 @@
     }
 
     const systemPrompt = `You are an expert QA Engineer and Technical Lead.
-Analyze the provided images/logs and system context to generate a highly detailed, 10-section bug report.
+Analyze the provided images, videos, documents (PDF, Word), text files, and system context to generate a highly detailed, 10-section bug report.
 
 CRITICAL INSTRUCTIONS:
-1. Deduce details from the images if possible. For example:
+1. Deduce details from the images, videos, and documents if possible. For example:
 - Check status bars for OS (iOS vs Android) and Network Condition (WiFi, LTE, signal bars).
 - Check UI layout to deduce Device (e.g., iPhone, Desktop Browser, Tablet).
 - Look for visible error toasts, console logs, or network requests for Error Codes.
+- Read logs, stack traces, or descriptions from text files and documents.
+- Observe interactions and error sequences in video recordings.
 2. If any piece of information cannot be deduced or found, output "N/A". DO NOT guess wildly if there is no visual or
 contextual evidence.
 
@@ -501,12 +503,12 @@ Version: ${envData.version || "N/A"}
 Browser: ${envData.browser || "N/A"}
 OS: ${envData.os || "N/A"}.`;
 
-    const imageParts = await Promise.all(
+    const assetParts = await Promise.all(
       assets
-        .filter((asset) => asset.type === "image")
+        .filter((asset) => ["image", "video", "pdf", "doc", "text"].includes(asset.type))
         .map(async (asset) => ({
           inlineData: {
-            mimeType: asset.file.type,
+            mimeType: asset.file.type || "application/octet-stream",
             data: await fileToBase64(asset.file)
           }
         }))
@@ -525,7 +527,7 @@ OS: ${envData.os || "N/A"}.`;
             contents: [
               {
                 role: "user",
-                parts: [{ text: userQuery }, ...imageParts]
+                parts: [{ text: userQuery }, ...assetParts]
               }
             ],
             systemInstruction: { parts: [{ text: systemPrompt }] },

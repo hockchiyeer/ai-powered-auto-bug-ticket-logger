@@ -190,14 +190,14 @@
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <${StatusCard}
-            title="Expected"
-            content=${r.behavior?.expected ?? "N/A"}
-            type="success"
-          />
-          <${StatusCard}
             title="Observed"
             content=${r.behavior?.observed ?? "N/A"}
             type="error"
+          />
+          <${StatusCard}
+            title="Expected"
+            content=${r.behavior?.expected ?? "N/A"}
+            type="success"
           />
         </div>
 
@@ -235,18 +235,18 @@
             <div className="grid grid-cols-2 border-b border-slate-200 bg-slate-50">
               <div className="p-3 border-r border-slate-200">
                 <span className="block text-[10px] font-bold text-slate-400 uppercase">
-                  Error Code
+                  Component
                 </span>
                 <span className="font-mono text-sm text-red-600">
-                  ${r.technicalDetails?.errorCode ?? "N/A"}
+                  ${r.technicalDetails?.component ?? "N/A"}
                 </span>
               </div>
               <div className="p-3">
                 <span className="block text-[10px] font-bold text-slate-400 uppercase">
-                  Component
+                  Error Code
                 </span>
                 <span className="font-mono text-sm">
-                  ${r.technicalDetails?.component ?? "N/A"}
+                  ${r.technicalDetails?.errorCode ?? "N/A"}
                 </span>
               </div>
             </div>
@@ -255,7 +255,7 @@
                 Logs / Stack Trace
               </span>
               <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed opacity-90">
-${r.technicalDetails?.logsOrStackTrace ?? "N/A"}
+                  ${r.technicalDetails?.logsOrStackTrace ?? "N/A"}
               </pre>
             </div>
             <div className="p-4 bg-white">

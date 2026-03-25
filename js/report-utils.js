@@ -31,8 +31,8 @@
     };
     const defaultSteps = ["Not provided"];
     const defaultTechnicalDetails = {
-      errorCode: "N/A",
       component: "N/A",
+      errorCode: "N/A",
       logsOrStackTrace: "N/A",
       additionalNotes: "N/A"
     };
@@ -117,8 +117,8 @@
     ].filter(f => f.value && f.value !== "N/A");
 
     const technicalDetailsFields = [
-      { label: "Error Code", value: r.technicalDetails?.errorCode || "N/A" },
       { label: "Component", value: r.technicalDetails?.component || "N/A" },
+      { label: "Error Code", value: r.technicalDetails?.errorCode || "N/A" },
       { label: "Logs / Stack Trace", value: r.technicalDetails?.logsOrStackTrace || "N/A", isLong: true }
     ];
 
@@ -159,13 +159,13 @@
   </div>
 
   <div style="margin-top: 32px; margin-bottom: 24px;">
-    <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e; margin-bottom: 16px;">
-      <h3 style="color: #166534; font-size: 14px; margin: 0 0 8px 0; font-weight: bold;">Expected Behavior</h3>
-      <div style="font-size: 14px; color: #14532d; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">${escapeHtml(r.behavior?.expected)}</div>
-    </div>
-    <div style="background: #fef2f2; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-      <h3 style="color: #991b1b; font-size: 14px; margin: 0 0 8px 0; font-weight: bold;">Observed Behavior</h3>
+    <div style="background: #fef2f2; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444; margin-bottom: 16px;">
+      <h2 style="color: #991b1b; font-size: 14px; margin: 0 0 8px 0; font-weight: bold; text-decoration: underline;">Observed Behavior</h2>
       <div style="font-size: 14px; color: #7f1d1d; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">${escapeHtml(r.behavior?.observed)}</div>
+    </div>
+    <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e; margin-bottom: 16px;">
+      <h2 style="color: #166534; font-size: 14px; margin: 0 0 8px 0; font-weight: bold; text-decoration: underline;">Expected Behavior</h2>
+      <div style="font-size: 14px; color: #14532d; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">${escapeHtml(r.behavior?.expected)}</div>
     </div>
   </div>
 
