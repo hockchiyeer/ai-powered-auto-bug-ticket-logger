@@ -467,9 +467,9 @@ The output MUST be a JSON object matching this schema:
 "status": "Open"
 },
 "environment": {
-"client": "Browser or App version (deduce if possible)",
-"device": "Device model or type (e.g., iPhone 14, Desktop, Android Tablet)",
-"osPlatform": "OS and version",
+"client": "Browser or App version (Use provided Browser context if available, otherwise deduce)",
+"device": "Device model or type (Use provided Resolution context if available, otherwise deduce)",
+"osPlatform": "OS and version (Use provided OS context if available, otherwise deduce)",
 "networkCondition": "e.g., 4G, WiFi, Offline, N/A"
 },
 "behavior": {
@@ -495,13 +495,14 @@ The output MUST be a JSON object matching this schema:
 }`;
 
     const userQuery = `Analyze this bug.
-User Provided Context (Use this if available, otherwise deduce):
+User Provided Context (PRIORITIZE THIS for the 'environment' section):
 Intent/Context: ${envData.intent || "N/A"}
 URL: ${envData.url || "N/A"}
 Env: ${envData.testEnv || "N/A"}
 Version: ${envData.version || "N/A"}
 Browser: ${envData.browser || "N/A"}
-OS: ${envData.os || "N/A"}.`;
+OS: ${envData.os || "N/A"}
+Resolution: ${envData.resolution || "N/A"}.`;
 
     const assetParts = await Promise.all(
       assets

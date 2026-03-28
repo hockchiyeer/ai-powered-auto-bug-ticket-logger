@@ -269,10 +269,55 @@
       }
     }, [toast]);
 
+    const getBrowserInfo = () => {
+      const ua = navigator.userAgent;
+      let browser = "Unknown Browser";
+      let version = "";
+
+      if (ua.includes("Firefox")) {
+        browser = "Firefox";
+        version = ua.match(/Firefox\/([\d\.]+)/)?.[1] || "";
+      } else if (ua.includes("Edg")) {
+        browser = "Edge";
+        version = ua.match(/Edg\/([\d\.]+)/)?.[1] || "";
+      } else if (ua.includes("Chrome")) {
+        browser = "Chrome";
+        version = ua.match(/Chrome\/([\d\.]+)/)?.[1] || "";
+      } else if (ua.includes("Safari")) {
+        browser = "Safari";
+        version = ua.match(/Version\/([\d\.]+)/)?.[1] || "";
+      } else if (ua.includes("MSIE") || ua.includes("Trident")) {
+        browser = "Internet Explorer";
+        version = ua.match(/(MSIE |rv:)([\d\.]+)/)?.[2] || "";
+      }
+
+      return version ? `${browser} ${version}` : browser;
+    };
+
+    const getOSInfo = () => {
+      const ua = navigator.userAgent;
+      const platform = navigator.platform;
+      let os = "Unknown";
+
+      if (/Win/.test(platform)) {
+        os = "Windows";
+      } else if (/Mac/.test(platform)) {
+        os = "macOS";
+      } else if (/Linux/.test(platform)) {
+        os = "Linux";
+      } else if (/iPhone|iPad|iPod/.test(ua)) {
+        os = "iOS";
+      } else if (/Android/.test(ua)) {
+        os = "Android";
+      }
+
+      return os;
+    };
+
     const buildRuntimeData = () => ({
       ...envContext,
-      browser: navigator.userAgent.split(" ").slice(-1)[0],
-      os: navigator.platform,
+      browser: getBrowserInfo(),
+      os: getOSInfo(),
       resolution: `${window.screen.width} x ${window.screen.height}`
     });
 

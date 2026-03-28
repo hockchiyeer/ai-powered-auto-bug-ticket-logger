@@ -196,7 +196,7 @@
   </div>
 
   ${imageDataUrls.length > 0 ? `
-  <div style="margin-top: 32px; margin-bottom: 24px;">
+  <div class="screenshots-section" style="margin-top: 32px; margin-bottom: 24px; page-break-before: always; break-before: page;">
     <h2 style="color: #475569; font-size: 18px; font-weight: bold; text-decoration: underline; margin-bottom: 16px;">Screenshots</h2>
     ${imageDataUrls.map((img) => `
       <div style="margin-bottom: 24px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #f8fafc; max-width: 100%;">
@@ -251,6 +251,11 @@
     body {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+    }
+
+    .screenshots-section {
+      page-break-before: always;
+      break-before: page;
     }
   </style>
 </head>

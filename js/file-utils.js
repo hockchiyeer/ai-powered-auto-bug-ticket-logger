@@ -46,21 +46,28 @@
     return incomingFiles.map((file) => {
       const fileName = file.name.toLowerCase();
       const fileType = (file.type || "").toLowerCase();
+      const extension = fileName.split(".").pop();
       let type = "text";
 
-      if (fileType.includes("image") || /\.(jpg|jpeg|png|gif|webp|svg)$/.test(fileName)) {
+      const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp", "svg"];
+      const videoExtensions = ["mp4", "webm", "ogg", "mov", "avi", "m4v"];
+      const pdfExtensions = ["pdf"];
+      const docExtensions = ["doc", "docx", "rtf", "odt"];
+      const textExtensions = ["txt", "log", "json", "xml", "csv", "md"];
+
+      if (fileType.includes("image") || imageExtensions.includes(extension)) {
         type = "image";
-      } else if (fileType.includes("video") || /\.(mp4|webm|ogg|mov|avi)$/.test(fileName)) {
+      } else if (fileType.includes("video") || videoExtensions.includes(extension)) {
         type = "video";
-      } else if (fileType === "application/pdf" || fileName.endsWith(".pdf")) {
+      } else if (fileType === "application/pdf" || pdfExtensions.includes(extension)) {
         type = "pdf";
       } else if (
         fileType.includes("word") ||
-        fileName.endsWith(".doc") ||
-        fileName.endsWith(".docx")
+        fileType.includes("officedocument") ||
+        docExtensions.includes(extension)
       ) {
         type = "doc";
-      } else if (fileType.includes("text") || fileName.endsWith(".txt") || fileName.endsWith(".log")) {
+      } else if (fileType.includes("text") || textExtensions.includes(extension)) {
         type = "text";
       }
 
