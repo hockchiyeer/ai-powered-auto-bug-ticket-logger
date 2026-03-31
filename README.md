@@ -2,6 +2,8 @@
 
 BugGenie AI is a browser-based bug ticket drafting tool that turns screenshots and supporting artifacts into structured bug reports.
 
+👉 You can explore the live application built from this repository’s source code at: https://aistudio.google.com/apps/ce12cbda-aa17-405d-9018-96a8ef249d29?showPreview=true&showAssistant=true
+
 It uses the Google Gemini API for primary analysis and includes a manual Google Images / Google Lens fallback when Gemini credentials are missing or rejected. In the fallback path, the user uploads an image to Google, copies the AI-generated summary, and pastes that summary back into the app so BugGenie can generate ticket-ready content locally.
 
 ## What It Does
