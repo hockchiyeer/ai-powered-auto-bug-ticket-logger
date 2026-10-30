@@ -273,7 +273,7 @@
       const ua = navigator.userAgent;
       let browser = "Unknown Browser";
       let version = "";
-
+      
       if (ua.includes("Firefox")) {
         browser = "Firefox";
         version = ua.match(/Firefox\/([\d\.]+)/)?.[1] || "";
@@ -290,7 +290,7 @@
         browser = "Internet Explorer";
         version = ua.match(/(MSIE |rv:)([\d\.]+)/)?.[2] || "";
       }
-
+      
       return version ? `${browser} ${version}` : browser;
     };
 
@@ -867,6 +867,7 @@
                     id="file-upload"
                     className="hidden"
                     multiple=${true}
+                    accept="image/*,video/*,application/pdf,.doc,.docx,.rtf,.odt,.txt,.log,.json,.xml,.csv,.md"
                     onChange=${onDrop}
                   />
                   <label htmlFor="file-upload" className="cursor-pointer">
