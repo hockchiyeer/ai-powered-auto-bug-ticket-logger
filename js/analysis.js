@@ -1,13 +1,11 @@
 (function registerAnalysis() {
   window.BugGenie = window.BugGenie || {};
 
-  const { geminiApiKey, googleImageSearchUrl } = window.BugGenie.config;
+  const { googleImageSearchUrl } = window.BugGenie.config;
   const { fileToBase64 } = window.BugGenie.fileUtils;
   const { sanitizeReport } = window.BugGenie.reportUtils;
-  const modelEndpoint =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
 
-  const isGeminiConfigured = () => Boolean(geminiApiKey);
+  const isGeminiConfigured = () => true;
 
   const normalizeErrorMessage = (error) => {
     return String(
@@ -21,7 +19,8 @@
       "missing gemini api key",
       "api key",
       "api_key_invalid",
-      "not valid",
+      "api key not valid",
+      "key not valid",
       "invalid api key",
       "credential",
       "permission denied",
@@ -521,7 +520,7 @@ Resolution: ${envData.resolution || "N/A"}.`;
 
     while (retries < maxRetries) {
       try {
-        const response = await fetch(`${modelEndpoint}?key=${geminiApiKey}`, {
+        const response = await fetch('/api/analyze-bug', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -531,20 +530,57 @@ Resolution: ${envData.resolution || "N/A"}.`;
                 parts: [{ text: userQuery }, ...assetParts]
               }
             ],
-            systemInstruction: { parts: [{ text: systemPrompt }] },
-            generationConfig: { responseMimeType: "application/json" }
+            systemInstruction: systemPrompt
           })
         });
 
         if (!response.ok) {
-          const errorPayload = await response.json().catch(() => null);
-          const message = errorPayload?.error?.message || "Gemini API request failed.";
+          if (response.status === 413) {
+            const payloadTooLargeError = new Error(
+              "Attached files exceed the 32MB request upload limit. Please attach smaller or fewer files."
+            );
+            payloadTooLargeError.noRetry = true;
+            throw payloadTooLargeError;
+          }
+          const errorText = await response.text().catch(() => "");
+          let errorPayload = null;
+          try {
+            errorPayload = errorText ? JSON.parse(errorText) : null;
+          } catch {
+            errorPayload = null;
+          }
+          const isHtmlResponse = /^\s*</.test(errorText);
+          const message =
+            errorPayload?.error?.message ||
+            (!isHtmlResponse && errorText.trim()) ||
+            `Gemini API request failed (HTTP ${response.status}).`;
           throw new Error(message);
         }
 
-        const result = await response.json();
-        const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-        const parsed = JSON.parse(rawText);
+        const responseText = await response.text();
+        let result = null;
+        try {
+          result = responseText ? JSON.parse(responseText) : null;
+        } catch {
+          const isHtmlResponse = /^\s*</.test(responseText);
+          throw new Error(
+            isHtmlResponse
+              ? "Server returned HTML instead of JSON. Please refresh the page and try again."
+              : "Server returned an invalid JSON response."
+          );
+        }
+
+        const rawText = result?.text;
+        if (!rawText || typeof rawText !== "string") {
+          throw new Error("AI model returned an empty response.");
+        }
+
+        const cleanedJsonText = rawText
+          .trim()
+          .replace(/^```(?:json)?\s*/i, "")
+          .replace(/\s*```$/i, "")
+          .trim();
+        const parsed = JSON.parse(cleanedJsonText);
         const report = sanitizeReport(parsed);
 
         return {
@@ -561,7 +597,7 @@ Resolution: ${envData.resolution || "N/A"}.`;
       } catch (error) {
         retries += 1;
 
-        if (shouldUseGoogleLensFallback(error) || retries === maxRetries) {
+        if (error?.noRetry || shouldUseGoogleLensFallback(error) || retries === maxRetries) {
           throw error;
         }
 
